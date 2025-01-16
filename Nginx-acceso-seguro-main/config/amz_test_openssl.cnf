@@ -1,0 +1,20 @@
+[ req ]
+default_bits       = 2048
+default_keyfile    = /etc/ssl/private/amz.test.key
+distinguished_name = req_distinguished_name
+x509_extensions    = v3_ca
+prompt             = no
+
+[ req_distinguished_name ]
+C  = ES
+ST = Andalucia
+L  = Granada
+O  = IZV
+OU = Informatica
+CN = amz.test
+
+[ v3_ca ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = www.amz.test

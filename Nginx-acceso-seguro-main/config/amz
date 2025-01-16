@@ -1,0 +1,15 @@
+server {
+  listen 80;
+  listen 443 ssl;
+  root /var/www/amz/html/static-website-example;
+  index index.html index.htm index.nginx-debian.html;
+  ssl_certificate /etc/ssl/certs/amz.test.crt;
+  ssl_certificate_key /etc/ssl/private/amz.test.key;
+  ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+  ssl_ciphers HIGH:!aNULL:!MD5;
+  server_name amz.test;
+
+  location / {
+    try_files $uri $uri/ =404;
+  }
+}

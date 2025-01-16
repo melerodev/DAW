@@ -1,0 +1,70 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/bullseye64"
+
+  # Máquina maestro
+  config.vm.define "NGINX" do |tierra|
+    tierra.vm.hostname = "NGINX.sistema.test"
+    tierra.vm.network "public_network"
+    tierra.vm.provider "virtualbox" do |vb|
+      vb.name = "NGINX"
+    end
+    tierra.vm.provision "shell", inline: <<-SHELL
+      set -x
+      echo "-------------------INSTLACIÓN DE PAQUETES-------------------"
+      apt-get update -y
+      apt-get install nginx -y
+      apt-get install unzip -y
+      apt-get install openssl -y
+      echo "-------------------INSTLACIÓN DE PAQUETES-------------------"
+
+      # # Creación de usuarios y contraseñas de acceso
+      # echo "-------------------CREACIÓN DE USUARIOS-------------------"
+      # sh -c "echo -n 'alejandro:' >> /etc/nginx/.htpasswd"
+      # sh -c "openssl passwd -apr1 'root'>> /etc/nginx/.htpasswd"
+      # sh -c "echo -n 'melero:' >> /etc/nginx/.htpasswd"
+      # sh -c "openssl passwd -apr1 'tupassword'>> /etc/nginx/.htpasswd"
+      # cat /etc/nginx/.htpasswd
+      # echo "-------------------CREACIÓN DE USUARIOS-------------------"
+
+      # Configuración de NGINX
+      echo "-------------------CONFIGURACIÓN DE NGINX-------------------"
+      mkdir -p /var/www/amz/html/static-website-example
+      cd /var/www/amz/html/simple-static-website
+      unzip /vagrant/config/perfect-html-education.zip -d /var/www/amz/html/static-website-example
+      chown -R www-data:www-data /var/www/amz/html
+      chmod -R 755 /var/www/amz
+      cp /vagrant/config/amz /etc/nginx/sites-available/default
+      ln -s /etc/nginx/sites-available/amz /etc/nginx/sites-enabled/default
+      cp /vagrant/config/amz2 /etc/nginx/sites-available/amz2
+      ln -s /etc/nginx/sites-available/amz2 /etc/nginx/sites-enabled/amz2
+      echo "-------------------CONFIGURACIÓN DE NGINX-------------------"
+
+      echo "-------------------CONGFIRACIÓN DE CORTAFUEGOS-------------------"
+      apt-get install ufw -y
+      ufw status
+      ufw allow ssh
+      ufw allow 'Nginx Full'
+      ufw delete allow 'Nginx HTTP'
+      ufw --force enable
+      echo "-------------------CONGFIRACIÓN DE CORTAFUEGOS-------------------"
+
+      echo "-------------------GENERACION DE CERTIFICADO AUTOFIRMADO-------------------"
+      # amz.test
+      sudo openssl req -x509 -nodes -days 365 \
+      -newkey rsa:2048 -keyout /etc/ssl/private/amz.test.key \
+      -out /etc/ssl/certs/amz.test.crt \
+      -subj "/C=ES/ST=Andalucía/L=Granada/O=IZV/CN=amz.tets"
+
+      # amz2.test
+      sudo openssl req -x509 -nodes -days 365 \
+      -newkey rsa:2048 -keyout /etc/ssl/private/amz2.test.key \
+      -out /etc/ssl/certs/amz2.test.crt \
+      -subj "/C=ES/ST=Andalucía/L=Granada/O=IZV/CN=amz2.test"
+
+      systemctl restart nginx
+      systemctl status nginx
+      ip a
+      echo "-------------------GENERACION DE CERTIFICADO AUTOFIRMADO-------------------"
+    SHELL
+  end
+end

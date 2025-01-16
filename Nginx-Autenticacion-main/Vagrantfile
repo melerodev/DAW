@@ -1,0 +1,43 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/bullseye64"
+
+  # Máquina maestro
+  config.vm.define "NGINX" do |tierra|
+    tierra.vm.hostname = "NGINX.sistema.test"
+    tierra.vm.network "public_network" # Clase
+    tierra.vm.provider "virtualbox" do |vb|
+      vb.name = "NGINX"
+    end
+    tierra.vm.provision "shell", inline: <<-SHELL
+      echo "-------------------INSTLACIÓN DE PAQUETES-------------------"
+      apt-get update -y
+      apt-get install nginx -y
+      apt-get install unzip -y
+      apt-get install openssl -y
+      echo "-------------------INSTLACIÓN DE PAQUETES-------------------"
+
+      # Creación de usuarios y contraseñas de acceso
+      echo "-------------------CREACIÓN DE USUARIOS-------------------"
+      sh -c "echo -n 'alejandro:' >> /etc/nginx/.htpasswd"
+      sh -c "openssl passwd -apr1 'root'>> /etc/nginx/.htpasswd"
+      sh -c "echo -n 'melero:' >> /etc/nginx/.htpasswd"
+      sh -c "openssl passwd -apr1 'tupassword'>> /etc/nginx/.htpasswd"
+      cat /etc/nginx/.htpasswd
+      echo "-------------------CREACIÓN DE USUARIOS-------------------"
+
+      # Configuración de NGINX
+      echo "-------------------CONFIGURACIÓN DE NGINX-------------------"
+      systemctl status nginx
+      mkdir -p /var/www/amz/html/static-website-example
+      cd /var/www/amz/html/simple-static-website
+      unzip /vagrant/config/perfect-html-education.zip -d /var/www/amz/html/static-website-example
+      chown -R www-data:www-data /var/www/amz/html
+      chmod -R 755 /var/www/amz
+      cp /vagrant/config/amz /etc/nginx/sites-available/default
+      ln -s /etc/nginx/sites-available/amz /etc/nginx/sites-enabled/default
+      systemctl restart nginx
+      systemctl status nginx
+      echo "-------------------CONFIGURACIÓN DE NGINX-------------------"
+    SHELL
+  end
+end
