@@ -1,0 +1,25 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/bullseye64"
+
+  # Máquina maestro
+  config.vm.define "selfHosting" do |selfHosting|
+    selfHosting.vm.hostname = "selfHosting.sistema.test"
+    selfHosting.vm.network "public_network"
+    selfHosting.vm.provider "virtualbox" do |vb|
+      vb.name = "selfHosting"
+    end
+    selfHosting.vm.provision "shell", inline: <<-SHELL
+      echo "-------------------INSTLACIÓN DE PAQUETES-------------------"
+      apt-get update -y
+      apt-get isntall -y apache2
+      echo "-------------------INSTLACIÓN DE PAQUETES-------------------"
+
+      echo "-------------------CONFIGURACIÓN DE APACHE-------------------"
+      systemctl start apache2
+      systemctl status apache2
+      cp /vagrant/config/web/* /var/www/html/
+      chmod -R 755 /var/www/html/
+      echo "-------------------CONFIGURACIÓN DE APACHE-------------------"
+    SHELL
+  end
+end
