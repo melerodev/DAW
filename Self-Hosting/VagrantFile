@@ -1,49 +1,49 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "debian/bullseye64"
+      config.vm.box = "debian/bullseye64"
 
-  # Máquina maestro
-  config.vm.define "selfHosting" do |selfHosting|
-    selfHosting.vm.hostname = "selfHosting.sistema.test"
-    selfHosting.vm.network "public_network"
-    selfHosting.vm.provider "virtualbox" do |vb|
+      # Máquina maestro
+      config.vm.define "selfHosting" do |selfHosting|
+      selfHosting.vm.hostname = "selfHosting.sistema.test"
+      selfHosting.vm.network "public_network"
+      selfHosting.vm.provider "virtualbox" do |vb|
       vb.name = "selfHosting"
-    end
-    selfHosting.vm.provision "shell", inline: <<-SHELL
-      echo "-------------------INSTALACIÓN DE PAQUETES-------------------"
-      apt-get update -y
-      apt-get install apache2 -y
-      apt-get install curl -y
-      apt-get install git -y
-      apt-get install git curl -y
-      curl -sL https://deb.nodesource.com/setup_current.x | sudo bash -
-      apt-get install nodejs -y
-      apt-get upgrade -y
-      echo "-------------------INSTALACIÓN DE PAQUETES-------------------"
+      end
+      selfHosting.vm.provision "shell", inline: <<-SHELL
+            echo "-------------------INSTALACIÓN DE PAQUETES-------------------"
+            apt-get update -y
+            apt-get install apache2 -y
+            apt-get install curl -y
+            apt-get install git -y
+            apt-get install git curl -y
+            curl -sL https://deb.nodesource.com/setup_current.x | sudo bash -
+            apt-get install nodejs -y
+            apt-get upgrade -y
+            echo "-------------------INSTALACIÓN DE PAQUETES-------------------"
 
-      echo "-------------------CONFIGURACIÓN DE APACHE-------------------"
-      sudo a2enmod proxy
-      sudo a2enmod proxy_http
-      sudo a2enmod auth_basic
-      cp /vagrant/config/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
-      cp -r /vagrant/config/web/* /var/www/html/
-      chmod -R 755 /var/www/html/
-      sudo apt install apache2-utils -y
-      cp /vagrant/config/apache/.htpasswdAdministration /etc/apache2/.htpasswdAdministration
-      cp /vagrant/config/apache/.htpasswdStatus /etc/apache2/.htpasswdStatus
+            echo "-------------------CONFIGURACIÓN DE APACHE-------------------"
+            sudo a2enmod proxy
+            sudo a2enmod proxy_http
+            sudo a2enmod auth_basic
+            cp /vagrant/config/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
+            cp -r /vagrant/config/web/* /var/www/html/
+            chmod -R 755 /var/www/html/
+            sudo apt install apache2-utils -y
+            cp /vagrant/config/apache/.htpasswdAdministration /etc/apache2/.htpasswdAdministration
+            cp /vagrant/config/apache/.htpasswdStatus /etc/apache2/.htpasswdStatus
 
-      sudo systemctl restart apache2
-      systemctl status apache2
-      echo "-------------------CONFIGURACIÓN DE APACHE-------------------"
+            sudo systemctl restart apache2
+            systemctl status apache2
+            echo "-------------------CONFIGURACIÓN DE APACHE-------------------"
 
-      echo "-------------------CONFIGURACIÓN DE STATUS-------------------"
-      rm -r uptime-kuma
-      git clone https://github.com/louislam/uptime-kuma.git
-      cd uptime-kuma
-      npm run setup
-      npm install -g npm@11.0.0
-      ip a
-      node server/server.js
-      echo "-------------------CONFIGURACIÓN DE STATUS-------------------"
-    SHELL
-  end
+            echo "-------------------CONFIGURACIÓN DE STATUS-------------------"
+            rm -r uptime-kuma
+            git clone https://github.com/louislam/uptime-kuma.git
+            cd uptime-kuma
+            npm run setup
+            npm install -g npm@11.0.0
+            ip a
+            node server/server.js
+            echo "-------------------CONFIGURACIÓN DE STATUS-------------------"
+      SHELL
+      end
 end
