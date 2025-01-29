@@ -190,3 +190,42 @@ Nos devolvería lago como esto y nos quedariamos con la `updateUrl`:
 
 Crearemos la tarea programada
 ![alt text](img/image-8.png)
+
+# 3. Ejecución de pruebas de rendimiento
+## Prueba 1: 100 usuarios concurrentes y 1000 peticiones
+### Página principal con SSL/TLS
+`ab -n 1000 -c 100 -k https://alejandromelero.es/`
+![alt text](img/image10.png)
+### Recurso específico (logo.png)
+`ab -n 1000 -c 100 -k https://alejandromelero.es/logo.png`
+![alt text](img/image-11.png)
+
+
+
+## Prueba 2: 1000 usuarios concurrentes y 1000 peticiones
+### Página principal con SSL/TLS
+`ab -n 1000 -c 1000 -k https://alejandromelero.es/`
+![alt text](img/image-12.png)
+### Recurso específico (logo.png)
+`ab -n 1000 -c 1000 -k https://alejandromelero.es/logo.png`
+![alt text](img/image-13.png)
+
+## Prueba 3: 100 usuarios concurrentes y 10,000 peticiones
+### Página principal con SSL/TLS
+`ab -n 10000 -c 100 -k https://alejandromelero.es/`
+![alt text](img/image-14.png)
+### Recurso específico (logo.png)
+`ab -n 10000 -c 100 -k https://alejandromelero.es/logo.png`
+![alt text](img/image-15.png)
+
+
+# Prueba 4: 1000 usuarios concurrentes y 10,000 peticiones
+### Página principal con SSL/TLS
+`ab -n 10000 -c 1000 -k https://alejandromelero.es/`
+![alt text](img/image-16.png)
+### Recurso específico (logo.png)
+`ab -n 10000 -c 1000 -k https://alejandromelero.es/logo.png`
+![alt text](img/image17.png)
+
+# 4. Pruebas de que funciona
+![alt text](img/prueba.gif)
