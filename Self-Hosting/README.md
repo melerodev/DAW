@@ -123,83 +123,70 @@ Nos iremos a https://my.ionos.es/domains y nos logearemos con nuestras credencia
 
 ### 2.1 Crear un registro de tipo A
 1. Accederemos a DNS
-![alt text](image.png)
+![alt text](img/image.png)
 2. Crear el registro
-![alt text](image-1.png)
+![alt text](img/image-1.png)
 3. Seleccionar el tipo de registro
-![alt text](image-2.png)
+![alt text](img/image-2.png)
 4. Rellenar los campos y darle al botón de guardar
-![alt text](image-3.png)
+![alt text](img/image-3.png)
 Resultado:
-![alt text](image-4.png)
+![alt text](img/image-4.png)
 
 ### 2.2 Crear el subdominio
 1. Accederemos a subdominios
-![alt text](image-5.png)
+![alt text](img/image-5.png)
 2. Le daremos a "Crear subdominio"
-![alt text](image-6.png)
+![alt text](img/image-6.png)
 3. Rellenar los campos y darle a "Guardar"
-![alt text](image-7.png)
+![alt text](img/image-7.png)
 
 
 # Configuración de la API de IONOS en el servidor
-### Instalar Python
-1. Para instalar Python 3.x, introduzca los siguientes comandos.
-
+1. Crearemo una API-Key y luego probaremos a hacer un curl para ver que todo funcione bien concantenando en en el parámetro de `--header` el prefijo y el sufijo.
+```curl -X GET https://api.hosting.ionos.com/dns/v1/zones \ -H "X-API-Key: cfc9240805.cbx1K2HT9OhPVZGnavYlMsJIrCdut6Dg"```
+<br>
+2. Activaremos autorizaremos la API de DNS de IONOS en el siguiente enlace https://developer.hosting.ionos.es/docs/dns
+![alt text](igm/image9.png)
+<br>
+3. Luego lanzaremos un automatización de DNS y copiaremos el enlace que este nos proporciona.
 ```
-sudo apt-get update
-sudo apt-get upgrade
-sudo apt-get install software-properties-common sudo
-sudo apt-get install python3
-```
-### Instalar Python
-2. Instalar pip, introduzca el siguiente comando:
-
-    ```sudo apt install python3-pip```
-    <br>
-3. Crear un entorno virtual
-```
-sudo apt install python3-venv
-python3 -m venv myenv
-source myenv/bin/activate
-```
-4. Instalar el cliente multiplataforma
-Para instalar el cliente multiplataforma, introduzca el siguiente comando:
-```sudo pip install domain-connect-dyndns```
-    <br>
-5. Para añadir el dominio cuya configuración de DNS debe actualizarse automáticamente, escriba el siguiente comando:
-```domain-connect-dyndns setup --domain NOMBRE_DEL_DOMINIO```
-    <br>
-
-    Ejemplo:
-
-    ```domain-connect-dyndns setup --domain example.com```
-    <br>
-
-6. Copie la URL y péguela en su navegador.
-
-7. Inicie sesión en área IONOS.
-
-8. Haga clic en Permitir.
-
-9. Anote el código que se muestra.
-
-10. Abra la línea de comandos e introduzca el código.
-
-11. Para actualizar todos los dominios, escriba el siguiente comando:
-
-```domain-connect-dyndns update --all```
-
-Después de introducir el comando, puede aparecer el siguiente mensaje:
-
-```
-[root@localhost ~]# domain-connect-dyndns update --all Read
-example.com config. IP
-217.160.25.20 found in A record New
-IP: 217.160.25.20 A
-record up to date
+curl -X 'POST' \
+  'https://api.hosting.ionos.com/dns/v1/dyndns' \
+  -H 'accept: application/json' \
+  -H 'X-API-Key: cfc9240805.cbx1K2HT9OhPVZGnavYlMsJIrCdut6Dg' \ ①
+  -H 'Content-Type: application/json' \
+  -d '{
+  "domains": [
+    "example.com", ②
+    "www.example.com" ③
+  ],
+  "description": "DNS dinámico"
+ }'
 ```
 
+Nos devolvería lago como esto y nos quedariamos con la `updateUrl`:
+```
+{
+
+    "bulkId": "22af3414-abbe-9e11-5df5-66fbe8e334b4",
+    "updateUrl": "https://ipv4.api.hosting.ionos.com/dns/v1/dyndns?q=dGVzdC50ZXN0", ①
+    "domains": [
+    "example-zone.de",
+    "www.example-zone.de"
+    ],
+    "description": "My DynamicDns"
+}
+```
 12. Para que la dirección IP se actualice regularmente en el registro DNS, se debe configurar una tarea Cron. Para editar el archivo crontab, escriba el siguiente comando:
 
 ```crontab -e```
+
+13. Y dentro de este pondremos el siguiente contenido:
+
+```5 * * * * curl {URL-PROPORCIONADA-POR-IONOS-EN-EL-PASO-ANTERIOR}```
+
+```crontab -e```
+
+Crearemos la tarea programada
+![alt text](img/image-8.png)
