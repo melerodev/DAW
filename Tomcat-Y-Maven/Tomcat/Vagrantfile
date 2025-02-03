@@ -1,0 +1,44 @@
+Vagrant.configure("2") do |config|
+    config.vm.box = "debian/bullseye64"
+
+    # Máquina maestro
+    config.vm.define "TOMCAT" do |tierra|
+        tierra.vm.hostname = "TOMCAT.sistema.test"
+        tierra.vm.network "public_network" # Clase
+        tierra.vm.provider "virtualbox" do |vb|
+        vb.name = "TOMCAT"
+    end
+    tierra.vm.provision "shell", inline: <<-SHELL
+        echo "-------------------INSTLACIÓN DE PAQUETES-------------------"
+        apt-get update -y
+        apt install -y openjdk-11-jdk
+        apt install -y tomcat9
+        apt install -y tomcat9-admin
+        sudo apt-get update && sudo apt-get -y install maven
+        mvn --v
+        echo "-------------------INSTLACIÓN DE PAQUETES-------------------"
+
+        echo "-------------------CONFIGURACIÓN DE TOMCAT-------------------"
+        groupadd tomcat9
+        useradd -s /bin/false -g tomcat9 -d /etc/tomcat9 tomcat9
+        systemctl start tomcat9
+        systemctl status tomcat9
+
+        cp /vagrant/config/context.xml /usr/share/tomcat9-admin/host-manager/META-INF/context.xml
+        cp /vagrant/config/tomcat-users.xml /etc/tomcat9/tomcat-users.xml # Definir el usuario con acceso a Tomcat
+        
+        systemctl restart tomcat9
+        echo "-------------------CONFIGURACIÓN DE TOMCAT-------------------"
+
+        echo "-------------------CONFIGURACIÓN DE MAVEN-------------------"
+        # cp /vagrant/config/settings.xml /etc/maven/settings.xml
+        # mvn archetype:generate -DgroupId=org.zaidinvergeles \
+        #                 -DartifactId=tomcat-war \
+        #                 -deployment \
+        #                 -DarchetypeArtifactId=maven-archetype-webapp \
+        #                 -DinteractiveMode=false
+        # cd tomcat-war-deployment
+        echo "-------------------CONFIGURACIÓN DE MAVEN-------------------"
+    SHELL
+    end
+end
