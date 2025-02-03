@@ -124,42 +124,55 @@ Nos iremos a https://my.ionos.es/domains y nos logearemos con nuestras credencia
 ### 2.1 Crear un registro de tipo A
 1. Accederemos a DNS
 ![alt text](img/image.png)
+
 2. Crear el registro
 ![alt text](img/image-1.png)
+
 3. Seleccionar el tipo de registro
 ![alt text](img/image-2.png)
+
 4. Rellenar los campos y darle al botón de guardar
+
 ![alt text](img/image-3.png)
 Resultado:
+
 ![alt text](img/image-4.png)
 
 ### 2.2 Crear el subdominio
 1. Accederemos a subdominios
+
 ![alt text](img/image-5.png)
 2. Le daremos a "Crear subdominio"
+
 ![alt text](img/image-6.png)
 3. Rellenar los campos y darle a "Guardar"
+
 ![alt text](img/image-7.png)
 
 
 # Configuración de la API de IONOS en el servidor
 1. Crearemo una API-Key y luego probaremos a hacer un curl para ver que todo funcione bien concantenando en en el parámetro de `--header` el prefijo y el sufijo.
+
 ```curl -X GET https://api.hosting.ionos.com/dns/v1/zones \ -H "X-API-Key: cfc9240805.cbx1K2HT9OhPVZGnavYlMsJIrCdut6Dg"```
 <br>
+
 2. Activaremos autorizaremos la API de DNS de IONOS en el siguiente enlace https://developer.hosting.ionos.es/docs/dns
-![alt text](igm/image9.png)
+
+![alt text](img/image18.png)
+
 <br>
 3. Luego lanzaremos un automatización de DNS y copiaremos el enlace que este nos proporciona.
+
 ```
 curl -X 'POST' \
   'https://api.hosting.ionos.com/dns/v1/dyndns' \
   -H 'accept: application/json' \
-  -H 'X-API-Key: cfc9240805.cbx1K2HT9OhPVZGnavYlMsJIrCdut6Dg' \ ①
+  -H 'X-API-Key: cfc9240805.cbx1K2HT9OhPVZGnavYlMsJIrCdut6Dg' \ 
   -H 'Content-Type: application/json' \
   -d '{
   "domains": [
-    "example.com", ②
-    "www.example.com" ③
+    "example.com", 
+    "www.example.com" 
   ],
   "description": "DNS dinámico"
  }'
@@ -189,15 +202,18 @@ Nos devolvería lago como esto y nos quedariamos con la `updateUrl`:
 ```crontab -e```
 
 Crearemos la tarea programada
+
 ![alt text](img/image-8.png)
 
 # 3. Ejecución de pruebas de rendimiento
 ## Prueba 1: 100 usuarios concurrentes y 1000 peticiones
 ### Página principal con SSL/TLS
 `ab -n 1000 -c 100 -k https://alejandromelero.es/`
+
 ![alt text](img/image10.png)
 ### Recurso específico (logo.png)
 `ab -n 1000 -c 100 -k https://alejandromelero.es/logo.png`
+
 ![alt text](img/image-11.png)
 
 
@@ -205,27 +221,34 @@ Crearemos la tarea programada
 ## Prueba 2: 1000 usuarios concurrentes y 1000 peticiones
 ### Página principal con SSL/TLS
 `ab -n 1000 -c 1000 -k https://alejandromelero.es/`
+
 ![alt text](img/image-12.png)
 ### Recurso específico (logo.png)
 `ab -n 1000 -c 1000 -k https://alejandromelero.es/logo.png`
+
 ![alt text](img/image-13.png)
 
 ## Prueba 3: 100 usuarios concurrentes y 10,000 peticiones
 ### Página principal con SSL/TLS
 `ab -n 10000 -c 100 -k https://alejandromelero.es/`
+
 ![alt text](img/image-14.png)
 ### Recurso específico (logo.png)
 `ab -n 10000 -c 100 -k https://alejandromelero.es/logo.png`
+
 ![alt text](img/image-15.png)
 
 
 # Prueba 4: 1000 usuarios concurrentes y 10,000 peticiones
 ### Página principal con SSL/TLS
 `ab -n 10000 -c 1000 -k https://alejandromelero.es/`
+
 ![alt text](img/image-16.png)
 ### Recurso específico (logo.png)
 `ab -n 10000 -c 1000 -k https://alejandromelero.es/logo.png`
+
 ![alt text](img/image17.png)
 
 # 4. Pruebas de que funciona
+
 ![alt text](img/prueba.gif)
