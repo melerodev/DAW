@@ -31,13 +31,11 @@ Vagrant.configure("2") do |config|
         echo "-------------------CONFIGURACIÓN DE TOMCAT-------------------"
 
         echo "-------------------CONFIGURACIÓN DE MAVEN-------------------"
-        # cp /vagrant/config/settings.xml /etc/maven/settings.xml
-        # mvn archetype:generate -DgroupId=org.zaidinvergeles \
-        #                 -DartifactId=tomcat-war \
-        #                 -deployment \
-        #                 -DarchetypeArtifactId=maven-archetype-webapp \
-        #                 -DinteractiveMode=false
-        # cd tomcat-war-deployment
+        cp /vagrant/config/settings.xml /etc/maven/settings.xml
+        mvn archetype:generate -DgroupId=org.zaidinvergeles \
+                                        -DartifactId=tomcat-war \
+                                        -DarchetypeArtifactId=maven-archetype-webapp \
+                                        -DinteractiveMode=false
         echo "-------------------CONFIGURACIÓN DE MAVEN-------------------"
     SHELL
     end
