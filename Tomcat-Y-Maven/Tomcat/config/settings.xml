@@ -122,6 +122,11 @@ under the License.
       <password>repopwd</password>
     </server>
     -->
+    <server>
+      <id>Tomcat</id>
+      <username>alejandro-deploy</username>
+      <password>1234</password>
+    </server>
 
     <!-- Another sample, using keys to authenticate.
     <server>

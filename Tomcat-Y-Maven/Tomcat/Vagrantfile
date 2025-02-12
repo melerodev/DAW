@@ -36,6 +36,8 @@ Vagrant.configure("2") do |config|
                                         -DartifactId=tomcat-war \
                                         -DarchetypeArtifactId=maven-archetype-webapp \
                                         -DinteractiveMode=false
+        cp /vagrant/config/pom.xml /home/vagrant/tomcat-war/pom.xml
+        mvn tomcat7:deploy
         echo "-------------------CONFIGURACIÓN DE MAVEN-------------------"
     SHELL
     end
