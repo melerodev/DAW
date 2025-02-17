@@ -1,0 +1,47 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/bullseye64"
+
+  # Máquina maestro
+  config.vm.define "FLASK-GUNICORN" do |pythonweb|
+    pythonweb.vm.hostname = "FLASK-GUNICORN.sistema.test"
+    pythonweb.vm.network "public_network" # Clase
+    pythonweb.vm.provider "virtualbox" do |vb|
+      vb.name = "FLASK-GUNICORN"
+    end
+    pythonweb.vm.provision "shell", inline: <<-SHELL
+      echo "-------------------INSTLACIÓN DE PAQUETES-------------------"
+      apt-get update -y
+      apt-get install nginx -y
+      sudo apt-get update && sudo apt-get install -y python3-pip
+      pip3 install pipenv
+      pipenv --version
+      pip3 install python-dotenv
+      echo "-------------------INSTLACIÓN DE PAQUETES-------------------"
+
+      echo "-------------------CONFIGURACIÓN DE NGINX-------------------"
+      systemctl status nginx
+      mkdir -p /var/www/app
+      chown -R $USER:www-data /var/www/app
+      chmod -R 755 /var/www/app
+      cp /vagrant/config/.env /var/www/app
+      cp /vagrant/config/amz /etc/nginx/sites-available/default
+      ln -s /etc/nginx/sites-available/amz /etc/nginx/sites-enabled/default
+      systemctl restart nginx
+      systemctl status nginx
+      echo "-------------------CONFIGURACIÓN DE NGINX-------------------"
+
+      echo "-------------------INSTALACIÓN Y CONFIGURACIÓN DE FLASK Y GUNICORN-------------------"
+      PATH=$PATH:/home/vagrant/.local/bin
+      cd /var/www/app
+      # pipenv shell
+      # sudo pipenv install flask 
+      # sudo pipenv install gunicorn 
+      # cp /vagrant/config/application.py /var/www/app
+      # cp /vagrant/config/wsgi.py /var/www/app
+      # pipenv run flask run --host '0.0.0.0'
+      # flask run --host '0.0.0.0'
+      # gunicorn --workers 4 --bind 0.0.0.0:5000 wsgi:app
+      echo "-------------------INSTALACIÓN DE FLASK Y GUNICORN-------------------"
+    SHELL
+  end
+end
