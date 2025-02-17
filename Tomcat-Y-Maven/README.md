@@ -131,6 +131,7 @@ Para ello:
 
 3. **Buscamos la sección que nos permite desplegar un WAR manualmente:**
     En la interfaz de administración de Tomcat, buscamos la sección "Deploy" o "Despliegue" que permite cargar y desplegar archivos WAR manualmente. Seleccionamos el archivo `tomcat1.war` y lo subimos para desplegar la aplicación.
+    
     ![alt text](img/image-4.png)
 
     ![alt text](img/image-5.png)
