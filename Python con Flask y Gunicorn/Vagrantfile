@@ -9,39 +9,37 @@ Vagrant.configure("2") do |config|
       vb.name = "FLASK-GUNICORN"
     end
     pythonweb.vm.provision "shell", inline: <<-SHELL
-      echo "-------------------INSTLACIÓN DE PAQUETES-------------------"
-      apt-get update -y
-      apt-get install nginx -y
-      sudo apt-get update && sudo apt-get install -y python3-pip
+      echo "-------------------INSTALACIÓN DE PAQUETES-------------------"
+      sudo apt-get update -y
+      sudo apt-get install -y nginx python3-pip
       pip3 install pipenv
       pipenv --version
       pip3 install python-dotenv
-      echo "-------------------INSTLACIÓN DE PAQUETES-------------------"
+      echo "-------------------INSTALACIÓN DE PAQUETES-------------------"
 
       echo "-------------------CONFIGURACIÓN DE NGINX-------------------"
-      systemctl status nginx
-      mkdir -p /var/www/app
-      chown -R $USER:www-data /var/www/app
-      chmod -R 755 /var/www/app
-      cp /vagrant/config/.env /var/www/app
-      cp /vagrant/config/amz /etc/nginx/sites-available/default
-      ln -s /etc/nginx/sites-available/amz /etc/nginx/sites-enabled/default
-      systemctl restart nginx
-      systemctl status nginx
+      sudo systemctl status nginx
+      sudo mkdir -p /var/www/app
+      sudo chown -R $USER:www-data /var/www/app
+      sudo chmod -R 755 /var/www/app
+      sudo cp /vagrant/config/.env /var/www/app
+      sudo cp /vagrant/config/amz /etc/nginx/sites-available/default
+      sudo ln -s /etc/nginx/sites-available/amz /etc/nginx/sites-enabled/default
+      sudo systemctl restart nginx
+      sudo systemctl status nginx
       echo "-------------------CONFIGURACIÓN DE NGINX-------------------"
+    SHELL
 
+    pythonweb.vm.provision "shell", privileged: false, inline: <<-SHELL
       echo "-------------------INSTALACIÓN Y CONFIGURACIÓN DE FLASK Y GUNICORN-------------------"
-      PATH=$PATH:/home/vagrant/.local/bin
       cd /var/www/app
       # pipenv shell
-      # sudo pipenv install flask 
-      # sudo pipenv install gunicorn 
-      # cp /vagrant/config/application.py /var/www/app
-      # cp /vagrant/config/wsgi.py /var/www/app
-      # pipenv run flask run --host '0.0.0.0'
+      # pipenv run pip install flask gunicorn
+      cp /vagrant/config/application.py /var/www/app
+      cp /vagrant/config/wsgi.py /var/www/app
       # flask run --host '0.0.0.0'
       # gunicorn --workers 4 --bind 0.0.0.0:5000 wsgi:app
-      echo "-------------------INSTALACIÓN DE FLASK Y GUNICORN-------------------"
+      echo "-------------------INSTALACIÓN Y CONFIGURACIÓN DE FLASK Y GUNICORN-------------------"
     SHELL
   end
 end
