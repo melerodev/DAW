@@ -8,38 +8,73 @@ Vagrant.configure("2") do |config|
     pythonweb.vm.provider "virtualbox" do |vb|
       vb.name = "FLASK-GUNICORN"
     end
+    
     pythonweb.vm.provision "shell", inline: <<-SHELL
-      echo "-------------------INSTALACIÓN DE PAQUETES-------------------"
-      sudo apt-get update -y
-      sudo apt-get install -y nginx python3-pip
+      echo "------------------- INSTALACIÓN DE PAQUETES -------------------"
+      apt-get update -y
+      apt-get install -y nginx python3-pip
+      apt-get install git -y
       pip3 install pipenv
       pipenv --version
       pip3 install python-dotenv
-      echo "-------------------INSTALACIÓN DE PAQUETES-------------------"
+      echo "------------------- INSTALACIÓN DE PAQUETES -------------------"
 
-      echo "-------------------CONFIGURACIÓN DE NGINX-------------------"
-      sudo systemctl status nginx
-      sudo mkdir -p /var/www/app
-      sudo chown -R $USER:www-data /var/www/app
-      sudo chmod -R 755 /var/www/app
-      sudo cp /vagrant/config/.env /var/www/app
-      sudo cp /vagrant/config/amz /etc/nginx/sites-available/default
-      sudo ln -s /etc/nginx/sites-available/amz /etc/nginx/sites-enabled/default
-      sudo systemctl restart nginx
-      sudo systemctl status nginx
-      echo "-------------------CONFIGURACIÓN DE NGINX-------------------"
+      echo "------------------- CONFIGURACIÓN DE NGINX, FLASK Y GUNICORN, AZURE APP SERVICE COMO ROOT -------------------"
+      systemctl status nginx
+      mkdir -p /var/www/app
+      chown -R vagrant:www-data /var/www/app
+      chmod -R 755 /var/www/app
+      cp /vagrant/config/.env /var/www/app
+      cp /vagrant/config/amz /etc/nginx/sites-available/default
+      cp /vagrant/config/application.py /var/www/app
+      cp /vagrant/config/wsgi.py /var/www/app
+      sudo cp /vagrant/config/application.py .
+      sudo cp /vagrant/config/wsgi.py .
+      cp /vagrant/flask_app.service /etc/systemd/system
+      sudo ln -s /etc/nginx/sites-available/app.conf /etc/nginx/sites-enabled/
+      systemctl restart nginx
+      systemctl status nginx
+      echo "------------------- CONFIGURACIÓN DE NGINX, FLASK Y GUNICORN, AZURE APP SERVICE COMO ROOT -------------------"
     SHELL
 
     pythonweb.vm.provision "shell", privileged: false, inline: <<-SHELL
-      echo "-------------------INSTALACIÓN Y CONFIGURACIÓN DE FLASK Y GUNICORN-------------------"
+    pipenv install -r requirements.txt
+      echo "------------------- INSTALACIÓN Y CONFIGURACIÓN DE FLASK Y GUNICORN -------------------"
       cd /var/www/app
-      # pipenv shell
-      # pipenv run pip install flask gunicorn
-      cp /vagrant/config/application.py /var/www/app
-      cp /vagrant/config/wsgi.py /var/www/app
-      # flask run --host '0.0.0.0'
+      
+      # Crear el entorno virtual con pipenv
+      pipenv --python 3.9
+      pipenv install flask gunicorn
+      
+      # Establecer variable de entorno para Flask
+      echo 'export FLASK_APP=application.py' >> ~/.bashrc
+      echo 'export FLASK_ENV=production' >> ~/.bashrc
+      source ~/.bashrc
+
       # gunicorn --workers 4 --bind 0.0.0.0:5000 wsgi:app
-      echo "-------------------INSTALACIÓN Y CONFIGURACIÓN DE FLASK Y GUNICORN-------------------"
+      echo "------------------- INSTALACIÓN Y CONFIGURACIÓN DE FLASK Y GUNICORN -------------------"
+    SHELL
+
+    # Tarea de ampliación
+    pythonweb.vm.provision "shell", privileged: false, inline: <<-SHELL
+      echo "------------------- IMPLEMENTACIÓN DE APLICACIÓN WEB DE PYTHON (FLASK) EN AZURE APP SERVICE -------------------"
+      # cd /var/www/
+      # sudo git clone https://github.com/Azure-Samples/msdocs-python-flask-webapp-quickstart
+      # cd /var/www/msdocs-python-flask-webapp-quickstart
+      # sudo chmod -R 755 /var/www/msdocs-python-flask-webapp-quickstart
+      # sudo pipenv install -r requirements.txt
+
+      # # Crear el entorno virtual con pipenv
+      # pipenv --python 3.9
+      # pipenv install flask gunicorn
+      
+      # # Establecer variable de entorno para Flask
+      # echo 'export FLASK_APP=application.py' >> ~/.bashrc
+      # echo 'export FLASK_ENV=production' >> ~/.bashrc
+      # source ~/.bashrc
+
+      # # gunicorn --workers 4 --bind 0.0.0.0:5000 wsgi:app
+      echo "------------------- IMPLEMENTACIÓN DE APLICACIÓN WEB DE PYTHON (FLASK) EN AZURE APP SERVICE -------------------"
     SHELL
   end
 end

@@ -1,11 +1,12 @@
 server {
   listen 80;
-  listen [::]:80;
-  root /var/www/app;
-  index index.html index.htm index.nginx-debian.html;
-  server_name amz.test;
+  server_name app.izv www.app.izv;
+
+  access_log /var/log/nginx/app.access.log;
+  error_log /var/log/nginx/app.error.log;
 
   location / {
-    try_files $uri $uri/ =404;
+    include proxy_params;
+    proxy_pass http://unix:/var/www/app/app.sock;
   }
 }
