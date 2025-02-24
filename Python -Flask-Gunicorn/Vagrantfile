@@ -59,16 +59,13 @@ Vagrant.configure("2") do |config|
     echo "------------------- TAREA DE AMPLICACIÓN -------------------"
       cd /var/www/
       sudo git clone https://github.com/Azure-Samples/msdocs-python-flask-webapp-quickstart
-      sudo chown -R vagrant:vagrant /var/www/msdocs-python-flask-webapp-quickstart
+      sudo chown -R vagrant:vagrant /var/www/msdocs-python-flask-webapp-quickstart # Importante para que no installe las dependencias como root
       pipenv install -r requirements.txt
 
       cd /var/www/msdocs-python-flask-webapp-quickstart
 
       pipenv --python 3.9
       pipenv install flask gunicorn
-
-      sudo cp /vagrant/config/application.py .
-      sudo cp /vagrant/config/wsgi.py .
 
       # Crear el entorno virtual con pipenv
       pipenv --python 3.9
@@ -79,7 +76,7 @@ Vagrant.configure("2") do |config|
       echo 'export FLASK_ENV=production' >> ~/.bashrc
       source ~/.bashrc
 
-      # gunicorn --workers 4 --bind 0.0.0.0:5000 wsgi:app
+      # gunicorn --workers 4 --bind 0.0.0.0:5000 app:app
     echo "------------------- TAREA DE AMPLICACIÓN -------------------"
     SHELL
   end

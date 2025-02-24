@@ -149,3 +149,51 @@ Estos comandos se utilizan para actualizar los paquetes del sistema e instalar N
     systemctl status gunicorn
     ```
     Se debería ver un mensaje indicando que el servicio está activo.
+
+# Práctica de amplicación
+
+<hr style="border-radius: 10px;">
+
+1. **Clonar el repositorio:**
+    ```sh
+    cd /var/www/
+    sudo git clone https://github.com/Azure-Samples/msdocs-python-flask-webapp-quickstart
+    sudo chown -R vagrant:vagrant /var/www/msdocs-python-flask-webapp-quickstart
+    ```
+    Esto clona el repositorio y cambia la propiedad de los archivos para evitar problemas de permisos.
+
+2. **Instalar dependencias:**
+    ```sh
+    cd /var/www/msdocs-python-flask-webapp-quickstart
+    pipenv install -r requirements.txt
+    ```
+    Se instalan las dependencias listadas en el archivo `requirements.txt`.
+
+3. **Crear el entorno virtual con Pipenv:**
+    ```sh
+    pipenv --python 3.9
+    pipenv install flask gunicorn
+    ```
+    Esto crea un entorno virtual con Python 3.9 e instala `Flask` y `Gunicorn`.
+
+4. **Configurar variables de entorno para Flask y Gunicorn:**
+    Esto paso es por si queremos ejecutar `Flask` o `Gunicorn` con variables de entorno dentro del entorno virtual.
+    ```sh
+    echo 'export FLASK_APP=application.py' >> ~/.bashrc
+    echo 'export FLASK_ENV=production' >> ~/.bashrc
+    source ~/.bashrc
+    ```
+    Se establecen las variables de entorno necesarias para Flask.
+
+5. **Ejecutar la aplicación con Gunicorn:**
+    Entraremos dentro del entorno virtual con `pipenv shell` y luego ejecutaremos el siguiente comando:
+    ```sh
+    gunicorn --workers 4 --bind 0.0.0.0:5000 app:app
+    ```
+    Se inicia Gunicorn con 4 trabajadores y en el puerto 5000.
+
+### Comprobaciones
+
+1. **Verificar el funcionamiento**
+    Acceder a `http://<ip-mv>:5000` en el navegador.
+    ![alt text](img/image2.png)
