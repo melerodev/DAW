@@ -43,7 +43,7 @@ Vagrant.configure("2") do |config|
       
       # Crear el entorno virtual con pipenv
       pipenv --python 3.9
-      pipenv install gunicorn
+      pipenv install flask gunicorn
       
       # Establecer variable de entorno para Flask
       echo 'export FLASK_APP=application.py' >> ~/.bashrc
@@ -64,10 +64,6 @@ Vagrant.configure("2") do |config|
 
       cd /var/www/msdocs-python-flask-webapp-quickstart
 
-      pipenv --python 3.9
-      pipenv install flask gunicorn
-
-      # Crear el entorno virtual con pipenv
       pipenv --python 3.9
       pipenv install flask gunicorn
       
