@@ -193,7 +193,3 @@ Estos comandos se utilizan para actualizar los paquetes del sistema e instalar N
     Se inicia Gunicorn con 4 trabajadores y en el puerto 5000.
 
 ### Comprobaciones
-
-1. **Verificar el funcionamiento**
-    Acceder a `http://<ip-mv>:5000` en el navegador.
-    ![alt text](img/image2.png)
