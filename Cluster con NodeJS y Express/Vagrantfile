@@ -1,0 +1,47 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/bullseye64"
+
+  # Máquina maestro
+  config.vm.define "CLUSTER" do |cluster|
+    cluster.vm.hostname = "CLUSTER.sistema.test"
+    cluster.vm.network "public_network" # Clase
+    cluster.vm.provider "virtualbox" do |vb|
+      vb.name = "CLUSTER"
+    end
+    cluster.vm.provision "shell",  inline: <<-SHELL
+      echo "-------------------INSTLACIÓN DE PAQUETES-------------------"
+      apt-get update -y
+      apt-get install curl -y
+      curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+      apt-get install nodejs -y
+      echo "-------------------INSTLACIÓN DE PAQUETES-------------------"
+
+      echo "-------------------INIALIZACIÓN DEL PROGRAMA-------------------"
+      mkdir /home/vagrant/express
+      cd /home/vagrant/express
+      npm init -y
+      cp /vagrant/config/express-sin-cluster.js /home/vagrant/express
+      cp /vagrant/config/express-con-cluster.js /home/vagrant/express
+      npm install express
+
+      # node /home/vagrant/express/express-sin-cluster.js
+      # node /home/vagrant/express/express-con-cluster.js
+      echo "-------------------INIALIZACIÓN DEL PROGRAMA-------------------"
+
+      echo "-------------------MÉTRICAS DE RENDIMIENTO-------------------"
+      npm install -g loadtest
+      # loadtest http://localhost:3000/api/500000 -n 1000 -c 100
+      # loadtest http://localhost:3000/api/5000000000 -n 1000 -c 100
+
+      echo "-------------------MÉTRICAS DE RENDIMIENTO-------------------"
+
+      echo "-------------------PM2-------------------"
+      npm install pm2 -g
+      cp /vagrant/config/pm2/express-con-cluster-config.js /home/vagrant/express
+      cp /vagrant/config/pm2/express-sin-cluster-config.js /home/vagrant/express
+      # pm2 start express-sin-cluster-config.js
+      # pm2 start express-sin-cluster-config.js
+      echo "-------------------PM2-------------------"
+    SHELL
+  end
+end
