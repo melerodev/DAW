@@ -1,0 +1,32 @@
+services:
+  web:
+    image: nginx:latest
+    container_name: w1
+    hostname: w1.example.test
+    networks:
+      mynetwork:
+        ipv4_address: 192.168.57.11
+    volumes:
+      - ./config/w1_nginx.conf:/etc/nginx/sites-available/default
+      - ./config/index.html:/var/www/html/index.html
+    restart: always
+
+  proxy:
+    image: nginx:latest
+    container_name: proxy
+    hostname: www.example.test
+    ports:
+      - "80:80"
+    networks:
+      mynetwork:
+        ipv4_address: 192.168.57.10
+    volumes:
+      - ./config/proxy_nginx.conf:/etc/nginx/sites-available/default
+    restart: always
+
+networks:
+  mynetwork:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.57.0/24
