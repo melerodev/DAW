@@ -166,3 +166,4 @@ Para verificar que el proxy inverso está funcionando correctamente:
     ![alt text](image.png)
 
 ## Ampliación
+`compose.yml`
