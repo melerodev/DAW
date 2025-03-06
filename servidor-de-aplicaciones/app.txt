@@ -1,0 +1,58 @@
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+             RECUPERACIÓN DEAW: SERVIDORES DE APLICACIONES
+
+                          IES Zaidín-Vergeles
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+                                2025-03
+
+
+Table of Contents
+─────────────────
+
+1. Planteamiento
+2. Prueba
+3. Entrega
+
+
+Realizar si se tiene pendiente la parte de Servidores de Aplicaciones.
+Puedes utilizar máquinas virtuales, Vagrant o contenedores para
+resolverlo.
+
+
+1 Planteamiento
+═══════════════
+
+  Despliega una aplicación Flask con el servidor Gunicorn.
+
+  • Despliega la aplicación Flask que acompaña al ejercicio en un
+    archivo comprimido.
+
+  • Utiliza el servidor de aplicaciones GUnicorn para servir la
+    aplicación.
+
+  • Utiliza el servidor Nginx como proxy inverso para servir la
+    aplicación. Al acceder a `www.deaw.test' accederemos a la aplicación
+    Flask. El servidor tendrá la IP `192.168.57.3'. Ten en cuenta que
+    accedemos a él por nombre y no por IP.
+
+    Si has realizado la recuperación de servidor de aplicaciones utiliza
+    este servidor como proxy inverso.
+
+
+2 Prueba
+════════
+
+  • Captura la aplicación Flask ejecutándose a través del puerto `8666',
+    antes de utilizar el proxy inverso.
+
+  • Captura el acceso a la aplicación a través del proxy Nginx.
+
+
+3 Entrega
+═════════
+
+  • Capturas de pantalla.
+
+  • Ficheros modificados o creados.
